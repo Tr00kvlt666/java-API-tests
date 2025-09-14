@@ -22,6 +22,14 @@ public class MainSteps {
         LOG.debug("Ответ получен");
         LOG.info("<<listUsers");
     }
+    @Step("Получаем одного определенного пользователя")
+    public void listSingleUser(int number) {
+        LOG.info(">>listSingleUser");
+        Response response = getSingleUser(number);
+        debugLogResponseAndCheckStatus(response);
+        LOG.debug("Ответ получен");
+        LOG.info("<<listSingleUser");
+    }
 
     private Response getListUsers() {
         RequestSpecification request = requestBaseBuilder
@@ -30,6 +38,14 @@ public class MainSteps {
             request.log().all();
         }
         return request.when().get("/users?page=2");
+    }
+    private Response getSingleUser(int number) {
+        RequestSpecification request = requestBaseBuilder
+                .buildCollectingSpecification();
+        if (LOG.isDebugEnabled()) {
+            request.log().all();
+        }
+        return request.when().get("/users/" + number);
     }
 
     public void debugLogResponseAndCheckStatus(Response response) {

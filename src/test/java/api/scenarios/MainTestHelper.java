@@ -8,7 +8,11 @@ public class MainTestHelper {
     public MainTestHelper() {
         this.mainSteps = new MainSteps();
     }
+
     public void listUsersScenario() {
         mainSteps.listUsers();
+    }
+    public void listSingleUserScenario(int number) {
+        mainSteps.listSingleUser(number);
     }
 }
