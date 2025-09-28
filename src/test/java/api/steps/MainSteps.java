@@ -32,7 +32,7 @@ public class MainSteps {
     }
 
     @Step("Получаем список вещей")
-    public void listSingleUsers() {
+    public void listResources() {
         LOG.info(">>listSingleUsers");
         Response response = getListResources();
         debugLogResponseAndCheckStatus(response);
@@ -127,7 +127,7 @@ public class MainSteps {
         if (LOG.isDebugEnabled()) {
             request.log().all();
         }
-        return request.when().get("/users/" + number);
+        return request.when().get("/users/" + Integer.toString(number));
     }
 
     private Response getListResources() {

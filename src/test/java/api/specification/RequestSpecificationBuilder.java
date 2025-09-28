@@ -10,9 +10,10 @@ public class RequestSpecificationBuilder {
                 .basePath("/api");
         return RestAssured.given(requestSpecification);
     }
+
     private RequestSpecification buildBaseSpecification() {
         RequestSpecification requestSpecification = RestAssured.given()
-                .spec((new RequestSpecBuilder()).setAuth(RestAssured.DEFAULT_AUTH).build())
+                .spec((new RequestSpecBuilder()).build()) // Убрали setAuth(RestAssured.DEFAULT_AUTH)
                 .relaxedHTTPSValidation()
                 .baseUri("https://reqres.in/")
                 .accept("application/json, text/plain, */*")
