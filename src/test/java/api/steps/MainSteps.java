@@ -1,17 +1,21 @@
 package api.steps;
 
 import api.specification.RequestSpecificationBuilder;
+import api.utils.AllureLogFilter;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MainSteps {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainSteps.class);
     private final RequestSpecificationBuilder requestBaseBuilder = new RequestSpecificationBuilder();
+    private final AllureLogFilter allureLogFilter = new AllureLogFilter();
 
     @Step("Получаем список пользователей")
     public void listUsers() {
@@ -111,10 +115,11 @@ public class MainSteps {
         LOG.debug("Ответ получен");
         LOG.info("<<delayedResponse");
     }
-
+    @Step("Отправка GET запроса для получения списка пользователей")
     private Response getListUsers() {
         RequestSpecification request = requestBaseBuilder
                 .buildCollectingSpecification();
+        request = request.filter(allureLogFilter);
         if (LOG.isDebugEnabled()) {
             request.log().all();
         }
@@ -230,10 +235,22 @@ public class MainSteps {
         }
         return request.when().get("/users?delay=" + userId);
     }
+    @Step("Проверка структуры ответа")
+    public void validateResponseStructure(Response response) {
+        // Проверяем, что ответ содержит необходимые поля
+        String jsonPath = response.jsonPath().getString("data[0].email");
+        assertNotNull(jsonPath, "Email должен присутствовать в ответе");
 
+        // Добавляем информацию в Allure отчет
+        Allure.addAttachment("Первый пользователь", "text/plain",
+                "Email: " + jsonPath);
+    }
+
+    @Step("Проверка статуса ответа и логирование")
     public void debugLogResponseAndCheckStatus(Response response) {
         if (LOG.isDebugEnabled()) {
-            response.then().log().body().statusCode(200);
+            LOG.debug("Status Code: {}", response.getStatusCode());
+            LOG.debug("Response Body: {}", response.getBody().asString());
         }
         assertEquals(200, response.statusCode(), "Статус код не равен 200");
     }

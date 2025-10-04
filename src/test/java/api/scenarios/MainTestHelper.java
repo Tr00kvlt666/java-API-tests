@@ -1,6 +1,7 @@
 package api.scenarios;
 
 import api.steps.MainSteps;
+import io.qameta.allure.Step;
 
 public class MainTestHelper {
     private final MainSteps mainSteps;
@@ -9,6 +10,7 @@ public class MainTestHelper {
         this.mainSteps = new MainSteps();
     }
 
+    @Step("Сценарий получения списка пользователей")
     public void listUsersScenario() {
         mainSteps.listUsers();
     }
